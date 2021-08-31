@@ -13,7 +13,7 @@ Sort.Proprieties = {
   'quality',
   'icon',
   'level', 'name', 'id',
-  'count'
+  -- 'count' -- comment this out
 }
 
 
@@ -93,6 +93,27 @@ function Sort:Iterate()
     end
   end
 
+  -- Add this new block of code
+  -- Sort by count after everything else is done
+  if not self:Delaying('Run') then
+    for k, target in pairs(spaces) do
+      local item = target.item
+      if item.id and item.count then
+        for j = #spaces, k+1, -1 do
+          local from = spaces[j]
+          local other = from.item
+
+          if item.id == other.id and item.count < other.count then
+            self:Move(from, target)
+            self:Delay(0.05, 'Run')
+            break
+          end
+        end
+      end
+    end
+  end
+
+  -- Existing code
   if not self:Delaying('Run') then
     self:Stop()
   end
